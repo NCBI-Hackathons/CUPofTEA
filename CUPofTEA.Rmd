@@ -67,14 +67,30 @@ Now we can perform an evolutionary analysis by using the whole set of sequences 
 For illustrative purposes, we'll show this example using the analysis only for `r names(table(my_CD[my_CD != "0"]))[1]`. The idea is running the same code for each domain of interest. 
 
 
-#### Get the protein that contains that domain
+#### Get the protein that contains that domain and some extra info.
 ```{r}
 my_proteins[which(my_CD == "pfam10592")]
 ```
 
-```{r}
+Actually, we may want to take a look first at the abstract linked to this protein at Pubmed.
+
+```{r echo = FALSE}
+getAbstract <- function(id) {
+  abstract = entrez_fetch(db = "pubmed", id = id, rettype = "abstract")
+  abstract <- gsub("\n", "", abstract)
+  abstract
+  }
+
+```
+
+```{r cache = TRUE, KIM1}
 target <- my_proteins[which(my_CD == "pfam10592")]
 my_links <- entrez_link(dbfrom = "protein", id = target	, db = "all")
+getAbstract(my_links$links$protein_pubmed)
+```
+
+Now we'll look at the conserved domains: 
+```{r KIM2}
 target_cdd = entrez_summary(db = "cdd", id = my_links$links$protein_cdd)
 ```
 
@@ -103,6 +119,11 @@ my_archt <- read.csv("seqr.csv")
 dim(my_archt)
 head(my_archt)
 hist(my_archt$sequence_length)
+```
+<br>
+The definition associated with these proteins may help us to infer the function.
+```{r KIM3}
+unique(my_archt[[3]])
 ```
 
 #### E-Summary for each organism. 

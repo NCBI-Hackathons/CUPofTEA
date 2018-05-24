@@ -72,7 +72,7 @@ Now we can perform an evolutionary analysis by using the whole set of sequences 
 For illustrative purposes, we'll show this example using the analysis only for pfam06528. The idea is running the same code for each domain of interest. 
 
 
-#### Get the protein that contains that domain
+#### Get the protein that contains that domain and some extra info.
 
 ```r
 my_proteins[which(my_CD == "pfam10592")]
@@ -82,10 +82,24 @@ my_proteins[which(my_CD == "pfam10592")]
 ## [1] "YP_007003507.1"
 ```
 
+Actually, we may want to take a look first at the abstract linked to this protein at Pubmed.
+
+
+
 
 ```r
 target <- my_proteins[which(my_CD == "pfam10592")]
 my_links <- entrez_link(dbfrom = "protein", id = target	, db = "all")
+getAbstract(my_links$links$protein_pubmed)
+```
+
+```
+## [1] "1. Appl Environ Microbiol. 2012 Mar;78(6):1785-93. doi: 10.1128/AEM.07241-11. Epub2012 Jan 13.Characterization of the ELPhiS prophage from Salmonella enterica serovarEnteritidis strain LK5.Hanna LF(1), Matthews TD, Dinsdale EA, Hasty D, Edwards RA.Author information: (1)Molecular Sciences Department, University of Tennessee Health Sciences Center,Memphis, Tennessee, USA.Phages are a primary driving force behind the evolution of bacterial pathogens bytransferring a variety of virulence genes into their hosts. Similar to otherbacterial genomes, the Salmonella enterica serovar Enteritidis LK5 genomecontains several regions that are homologous to phages. Although genomic analysisdemonstrated the presence of prophages, it was unable to confirm which phageelements within the genome were viable. Genetic markers were used to tag one ofthe prophages in the genome to allow monitoring of phage induction. Commonly usedlaboratory strains of Salmonella were resistant to phage infection, and thereforea rapid screen was developed to identify susceptible hosts. This approach showed that a genetically tagged prophage, ELPhiS (Enteritidis lysogenic phage S), wascapable of infecting Salmonella serovars that are diverse in host range andvirulence and has the potential to laterally transfer genes between theseserovars via lysogenic conversion. The rapid screen approach is adaptable to any system with a large collection of isolates and may be used to test the viability of prophages found by sequencing the genomes of various bacterial pathogens.DOI: 10.1128/AEM.07241-11 PMCID: PMC3298174PMID: 22247173  [Indexed for MEDLINE]"
+```
+
+Now we'll look at the conserved domains: 
+
+```r
 target_cdd = entrez_summary(db = "cdd", id = my_links$links$protein_cdd)
 ```
 
@@ -150,6 +164,54 @@ hist(my_archt$sequence_length)
 ```
 
 ![](CUPofTEA_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+<br>
+The definition associated with these proteins may help us to infer the function.
+
+```r
+unique(my_archt[[3]])
+```
+
+```
+##  [1] hypothetical protein                           
+##  [2] AIPR family protein                            
+##  [3] abortive phage resistance protein              
+##  [4] abortive phage infection protein               
+##  [5] abortive infection protein                     
+##  [6] MULTISPECIES: AIPR family protein              
+##  [7] MULTISPECIES: hypothetical protein             
+##  [8] AIPR protein                                   
+##  [9] MULTISPECIES: abortive infection protein       
+## [10] MULTISPECIES: abortive phage infection protein 
+## [11] hypothetical protein, partial                  
+## [12] MULTISPECIES: abortive phage resistance protein
+## [13] MULTISPECIES: AIPR protein                     
+## [14] ISNCY family transposase                       
+## [15] hypothetical protein [                         
+## [16] abortive phage infection protein, partial      
+## [17] DUF4268 domain-containing protein              
+## [18] abortive phage resistance protein, partial     
+## [19] hypothetical protein STM2723.1.Fels2           
+## [20] AIPR protein, partial                          
+## [21] hypothetical protein KVU_0242                  
+## [22] MULTISPECIES: hypothetical protein, partial    
+## [23] hypothetical protein D11S_2258                 
+## [24] AIPR family protein, partial                   
+## [25] hypothetical protein glr2548                   
+## [26] abortive infection protein, partial            
+## [27] hypothetical protein BA_3802                   
+## [28] hypothetical protein BAS3521                   
+## [29] hypothetical protein HMPREF0421_21238          
+## [30] hypothetical protein AMED_8302                 
+## [31] hypothetical protein KPHS_17180                
+## [32] abortive phage infection protein [             
+## [33] abortive infection phage resistance protein    
+## [34] abortive phage infection                       
+## [35] Fels-2 prophage protein                        
+## [36] abortive infection protein [                   
+## [37] hypothetical protein TDE0910                   
+## [38] AIPR protein [                                 
+## 38 Levels: abortive infection phage resistance protein ...
+```
 
 #### E-Summary for each organism. 
 This example shows the analysis for the first 100 organisms. 
